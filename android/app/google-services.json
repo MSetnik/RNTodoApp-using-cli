@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "25143801570",
+    "firebase_url": "https://rntodoapp-11965-default-rtdb.firebaseio.com",
+    "project_id": "rntodoapp-11965",
+    "storage_bucket": "rntodoapp-11965.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:25143801570:android:1243b5a3b2237935f7d0bb",
+        "android_client_info": {
+          "package_name": "com.rntodoappts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "25143801570-1qqmf4o85eieq81k9egs5t86poalniaj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcUHniNMeUoofQXQimxUTgqjv-cED8h0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "25143801570-1qqmf4o85eieq81k9egs5t86poalniaj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
