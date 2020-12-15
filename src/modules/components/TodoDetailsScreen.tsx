@@ -1,16 +1,50 @@
-import React from 'react';
-import {View, Button, Text, StyleSheet} from 'react-native';
+import React, {useState} from 'react';
+import {View, Button, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {todoDelete, todoCompleted} from '../redux/actions/actionCreators';
+import firestore from '@react-native-firebase/firestore';
 
 function TodoDetailsScreen(props: any) {
+  const [input, setInput] = useState(props.route.params.todo.text);
+
   function deleteTodo() {
-    props.deleteTodos(props.route.params.todo[0].id);
+    // props.deleteTodos(props.route.params.todo);
+    // updateData();
+    firestore()
+      .collection('todo')
+      .doc(props.route.params.todo.id)
+      .delete()
+      .then(() => {
+        console.log('Todo Deleted!');
+      });
     props.navigation.navigate('TodoListScreen');
   }
 
   function completeTodo() {
-    props.markTodoCompleted(props.route.params.todo[0].id);
+    // props.markTodoCompleted(props.route.params.todo);
+    // // updateData();
+    firestore()
+      .collection('todo')
+      .doc(props.route.params.todo.id)
+      .update({
+        done: props.route.params.todo.done ? false : true,
+      })
+      .then(() => {
+        console.log('Todo updated!');
+      });
+    props.navigation.navigate('TodoListScreen');
+  }
+
+  function editTodo(input: any) {
+    firestore()
+      .collection('todo')
+      .doc(props.route.params.todo.id)
+      .update({
+        text: input,
+      })
+      .then(() => {
+        console.log('Todo updated!');
+      });
     props.navigation.navigate('TodoListScreen');
   }
 
@@ -20,20 +54,26 @@ function TodoDetailsScreen(props: any) {
         <View style={styles.viewButtons}>
           <View style={styles.btns}>
             <Button
-              title={
-                props.route.params.todo[0].done ? 'remove checkmark' : 'done'
-              }
+              title={props.route.params.todo.done ? 'remove checkmark' : 'done'}
               onPress={() => completeTodo()}
             />
           </View>
           <View style={styles.btns}>
             <Button title="Delete" color="red" onPress={() => deleteTodo()} />
           </View>
+          <View style={styles.btns}>
+            <Button
+              title="Edit"
+              color="green"
+              onPress={() => editTodo(input)}
+            />
+          </View>
         </View>
         <View style={styles.viewTodoText}>
-          <Text style={styles.todoText}>
-            {props.route.params.todo[0].todoText}
-          </Text>
+          <TextInput
+            style={styles.todoText}
+            onChangeText={(e) => setInput(e)}
+            value={input}></TextInput>
         </View>
       </View>
     </View>

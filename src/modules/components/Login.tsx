@@ -1,4 +1,4 @@
-import React, {useState, FC} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,15 +10,34 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {userLoggedIn} from '../redux/actions/actionCreators';
+import firestore from '@react-native-firebase/firestore';
 // import background from '../../assets/loginImg.jpg';
-
-interface background {
-  path: string;
-}
 
 const Login = (props: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  // const ref = firestore().collection('todo');
+
+  // useEffect(() => {
+  //   return ref.onSnapshot((querySnapshot) => {
+  //     const list: any = [];
+  //     querySnapshot.forEach((doc) => {
+  //       // const {title, complete} = doc.data();
+  //       // list.push({
+  //       //   id: doc.id,
+  //       //   title,
+  //       //   complete,
+  //       // });
+  //       console.log(doc.data());
+  //     });
+  //     // console.log(list);
+  //   });
+  // }, []);
+
+  // const users = firestore().collection('todo').get();
+
+  // console.log(users);
 
   function checkLogin(username: string, password: string) {
     props.state.forEach((user: any) => {

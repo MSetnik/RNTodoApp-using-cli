@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
@@ -15,8 +15,33 @@ import {
   todoCompleted,
   userLoggedIn,
 } from '../redux/actions/actionCreators';
+import firestore from '@react-native-firebase/firestore';
 
 function TodoListScreen(props: any) {
+  // const ref = firestore().collection('todo');
+  const [todos, setTodos] = useState([]);
+  const ref = firestore().collection('todo');
+
+  useEffect(() => {
+    return ref.onSnapshot((querySnapshot) => {
+      const list: any = [];
+      querySnapshot.forEach((doc) => {
+        // const {title, complete} = doc.data();
+        list.push({
+          id: doc.id,
+          userID: doc.data().userID,
+          text: doc.data().text,
+          done: doc.data().done,
+        });
+        // console.log(doc.data().done);
+      });
+      // console.log(list);
+      setTodos(list);
+    });
+  }, []);
+
+  console.log(todos);
+
   const closeRow = (rowMap: any, todoId: number) => {
     if (rowMap[todoId]) {
       rowMap[todoId].closeRow();
@@ -39,19 +64,17 @@ function TodoListScreen(props: any) {
       <View style={styles.flatlistView}>
         <SwipeListView
           // style={styles.flatlistContainer}
-          data={props.userTodos}
+          data={todos}
           keyExtractor={(item: any) => item.id.toString()}
           renderItem={({item}) => (
             <TouchableWithoutFeedback
               onPress={() =>
                 props.navigation.navigate('TodoDetailsScreen', {
-                  todo: props.userTodos.filter(
-                    (todo: any) => todo.id == item.id,
-                  ),
+                  todo: item,
                 })
               }>
               <View style={styles.flatlistContent}>
-                <Text style={styles.textTask}>{item.todoText}</Text>
+                <Text style={styles.textTask}>{item.text}</Text>
                 {item.done ? <IconsAntDesign name="check" /> : null}
               </View>
             </TouchableWithoutFeedback>
