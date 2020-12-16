@@ -11,7 +11,7 @@ import {
 } from '@react-navigation/stack';
 import {StyleSheet, ScrollView, View, Text, StatusBar} from 'react-native';
 import {connect} from 'react-redux';
-import {getUserLoggedIn} from './src/modules/redux/actions/actionCreators';
+// import {getUserLoggedIn} from './src/modules/redux/actions/actionCreators';
 // import database from '@react-native-firebase/database';
 
 const App = (props: any) => {
@@ -26,7 +26,7 @@ const App = (props: any) => {
   //     });
   // });
 
-  const loginSuccessCallback = (success: any) => {
+  const loginSuccessCallback = (success: any, user: any) => {
     if (success) {
       setLoggedInScreen(
         <>
@@ -34,6 +34,7 @@ const App = (props: any) => {
             name="TodoListScreen"
             component={TodoListScreen}
             options={{title: 'Todos'}}
+            initialParams={{user: user}}
           />
           <Stack.Screen
             name="TodoFormScreen"
@@ -93,8 +94,8 @@ const mapStateToProps = (state: any) => {
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
-    getLoggedInUser: () => dispatcher(getUserLoggedIn()),
+    // getLoggedInUser: () => dispatcher(getUserLoggedIn()),
   };
 };
 
-export default connect(mapStateToProps, dispatchStateToProps)(App);
+export default connect(mapStateToProps)(App);

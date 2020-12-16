@@ -8,34 +8,18 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {todoAdded} from '../redux/actions/actionCreators';
+import {todoAddedThunk} from '../redux/actions/actionCreators';
 import firestore from '@react-native-firebase/firestore';
 
 function TodoFormScreen(props: any) {
   const [input, setInput] = useState('');
 
-  // const [todo, setTodo] = useState('');
-  const ref = firestore().collection('todo');
-  // ...
-  async function addTodo() {
-    await ref.add({
-      id: 4,
-      userID: 2,
-      text: input,
-      done: false,
-    });
-    setInput('');
+  // const ref = firestore().collection('todo');
+
+  function addTodo() {
+    props.addTodoThunk(props.route.params.userId, input);
     props.navigation.navigate('TodoListScreen');
   }
-
-  // function addTodo() {
-  //   if (input != '') {
-  //     props.addTodo(props.route.params.userId, input);
-  //     props.navigation.navigate('TodoListScreen');
-  //   } else {
-  //     ToastAndroid.show('Insert valid text', ToastAndroid.SHORT);
-  //   }
-  // }
 
   return (
     <View style={styles.container}>
@@ -110,7 +94,8 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatcher: any) => {
   return {
-    addTodo: (id: number, text: string) => dispatcher(todoAdded(id, text)),
+    addTodoThunk: (id: number, text: string) =>
+      dispatcher(todoAddedThunk(id, text)),
   };
 };
 

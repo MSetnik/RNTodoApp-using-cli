@@ -11,36 +11,33 @@ import {connect} from 'react-redux';
 import IconsAntDesign from 'react-native-vector-icons/AntDesign';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {
-  todoDelete,
-  todoCompleted,
-  userLoggedIn,
+  todoDeletedThunk,
+  todoCompletedThunk,
 } from '../redux/actions/actionCreators';
 import firestore from '@react-native-firebase/firestore';
 
 function TodoListScreen(props: any) {
-  // const ref = firestore().collection('todo');
   const [todos, setTodos] = useState([]);
-  const ref = firestore().collection('todo');
+  const ref = firestore()
+    .collection('todo')
+    .where('userID', '==', props.route.params.user.id);
 
+  console.log(props.route.params.user);
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
       const list: any = [];
       querySnapshot.forEach((doc) => {
-        // const {title, complete} = doc.data();
         list.push({
           id: doc.id,
           userID: doc.data().userID,
           text: doc.data().text,
           done: doc.data().done,
         });
-        // console.log(doc.data().done);
       });
-      // console.log(list);
+
       setTodos(list);
     });
   }, []);
-
-  console.log(todos);
 
   const closeRow = (rowMap: any, todoId: number) => {
     if (rowMap[todoId]) {
@@ -48,15 +45,13 @@ function TodoListScreen(props: any) {
     }
   };
 
-  const complete = (id: number, rowMap: any) => {
-    props.markTodoCompleted(id);
-    console.log(id);
+  const complete = (id: number, rowMap: any, status: any) => {
+    props.markTodoCompleted(id, status);
     closeRow(rowMap, id);
   };
 
   const deleteRow = (id: number) => {
-    props.deleteTodos(id);
-    console.log(id);
+    props.deleteTodoThunk(id);
   };
 
   return (
@@ -84,7 +79,9 @@ function TodoListScreen(props: any) {
               <TouchableOpacity>
                 <Text
                   style={{padding: 20}}
-                  onPress={() => complete(data.item.id, rowMap)}>
+                  onPress={() =>
+                    complete(data.item.id, rowMap, data.item.done)
+                  }>
                   {data.item.done ? 'Undone' : 'Done'}
                 </Text>
               </TouchableOpacity>
@@ -108,17 +105,14 @@ function TodoListScreen(props: any) {
 
       <View style={styles.containerInput}>
         <Text style={styles.input}>
-          current user:{' '}
-          {props.state.userReducer.map((user: any) =>
-            user.signedIn ? user.username : null,
-          )}
+          current user: {props.route.params.user.username}
         </Text>
         <Button
           // style={styles.btnAdd}
           title="add"
           onPress={() =>
             props.navigation.navigate('TodoFormScreen', {
-              userId: props.userId,
+              userId: props.route.params.user.id,
             })
           }
         />
@@ -205,9 +199,10 @@ const mapStateToProps = (state: any) => {
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
-    deleteTodos: (id: any) => dispatcher(todoDelete(id)),
-    markTodoCompleted: (id: any) => dispatcher(todoCompleted(id)),
-    login: (id: any, success: any) => dispatcher(userLoggedIn(id, success)),
+    deleteTodoThunk: (id: number) => dispatcher(todoDeletedThunk(id)),
+
+    markTodoCompleted: (id: number, status: boolean) =>
+      dispatcher(todoCompletedThunk(id, status)),
   };
 };
 

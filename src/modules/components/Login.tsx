@@ -9,7 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {connect} from 'react-redux';
-import {userLoggedIn} from '../redux/actions/actionCreators';
+// import {userLoggedIn} from '../redux/actions/actionCreators';
 import firestore from '@react-native-firebase/firestore';
 // import background from '../../assets/loginImg.jpg';
 
@@ -17,34 +17,32 @@ const Login = (props: any) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // const ref = firestore().collection('todo');
+  const [users, setUsers] = useState([]);
+  const ref = firestore().collection('user');
 
-  // useEffect(() => {
-  //   return ref.onSnapshot((querySnapshot) => {
-  //     const list: any = [];
-  //     querySnapshot.forEach((doc) => {
-  //       // const {title, complete} = doc.data();
-  //       // list.push({
-  //       //   id: doc.id,
-  //       //   title,
-  //       //   complete,
-  //       // });
-  //       console.log(doc.data());
-  //     });
-  //     // console.log(list);
-  //   });
-  // }, []);
+  useEffect(() => {
+    return ref.onSnapshot((querySnapshot) => {
+      const list: any = [];
+      querySnapshot.forEach((doc) => {
+        list.push({
+          id: doc.id,
+          username: doc.data().username,
+          password: doc.data().password,
+        });
+        // console.log(doc.data().done);
+      });
+      // console.log(list);
+      setUsers(list);
+    });
+  }, []);
 
-  // const users = firestore().collection('todo').get();
-
-  // console.log(users);
-
+  console.log(users);
   function checkLogin(username: string, password: string) {
-    props.state.forEach((user: any) => {
+    users.forEach((user: any) => {
       if (user.username == username && user.password == password) {
-        props.login(user.id, true);
+        // props.login(user.id, true);
 
-        props.route.params.loginCallback(true);
+        props.route.params.loginCallback(true, user);
         // console.log(props.state);
       }
     });
@@ -84,7 +82,11 @@ const Login = (props: any) => {
             </Text>
             <Button
               title="Register"
-              onPress={() => props.navigation.navigate('Register')}
+              onPress={() =>
+                props.navigation.navigate('Register', {
+                  users: users,
+                })
+              }
             />
           </View>
         </View>
@@ -174,14 +176,15 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state: any) => {
+  console.log(state);
   return {state: state.userReducer};
 };
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
-    login: (id: number, success: string) =>
-      dispatcher(userLoggedIn(id, success)),
+    // login: (id: number, success: string) =>
+    //   dispatcher(userLoggedIn(id, success)),
   };
 };
 
-export default connect(mapStateToProps, dispatchStateToProps)(Login);
+export default connect(mapStateToProps)(Login);

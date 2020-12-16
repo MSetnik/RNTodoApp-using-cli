@@ -1,7 +1,6 @@
-export const ADD_TODO = 'ADD_TODO';
-export const DELETE_TODO = 'DELETE_TODO';
-export const TODO_COMPLETED = 'TODO_COMPLETED';
+export const ADD_TODO_THUNK = 'ADD_TODO_THUNK';
+export const DELETE_TODO_THUNK = 'DELETE_TODO_THUNK';
+export const TODO_COMPLETED_THUNK = 'TODO_COMPLETED_THUNK';
 
 export const ADD_USER = 'ADD_USER';
-export const USER_LOGGEDIN = 'USER_LOGGEDIN';
-export const GET_USER_LOGGEDIN = 'GET_USER_LOGGEDIN';
+export const ADD_USER_THUNK = 'ADD_USER_THUNK';

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,38 +8,84 @@ import {
   Button,
   ToastAndroid,
 } from 'react-native';
-
+import {LogBox} from 'react-native';
 // import background from "../assets/loginImg.jpg";
-import {addUser} from '../redux/actions/actionCreators';
+import {addNewUser} from '../redux/actions/actionCreators';
 import {connect} from 'react-redux';
-import {userLoggedIn} from '../redux/actions/actionCreators';
+import firestore from '@react-native-firebase/firestore';
 
 function Register(props: any) {
+  LogBox.ignoreLogs([
+    'Non-serializable values were found in the navigation state',
+  ]);
+
   console.log(props);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const checkUserSignedIn = () => {
-    props.state.userReducer.forEach((user: any) => {
-      if (user.username == username && user.password == password) {
-        props.login(user.id, true);
+  const ref = firestore().collection('user');
+  const [users, setUsers] = useState([]);
 
-        props.route.params.loginCallback(true);
-      }
-    });
-  };
-
-  checkUserSignedIn();
+  // function getUsers() {
+  //   useEffect(() => {
+  //     return ref.onSnapshot((querySnapshot) => {
+  //       let user: any = {};
+  //       querySnapshot.forEach((doc) => {
+  //         if (
+  //           username == doc.data().username &&
+  //           password == doc.data().password
+  //         ) {
+  //           user = {
+  //             id: doc.id,
+  //             username: username,
+  //             password: password,
+  //           };
+  //         }
+  //         // console.log(doc.data().done);
+  //       });
+  //       // console.log(list);
+  //       setUsers(user);
+  //     });
+  //   }, []);
+  // }
 
   function RegisterUser(username: string, password: string) {
-    if (username != null && password != null) {
-      props.addNewUser(username, password);
+    let userFound;
+    if (username != '' && password != '') {
+      props.route.params.users.forEach((user: any) => {
+        if (username == user.username) {
+          userFound = true;
+          ToastAndroid.show('Username is already taken', ToastAndroid.SHORT);
+        } else {
+          userFound = false;
+        }
+      });
+
+      if (!userFound) {
+        props.addNewUser(username, password);
+
+        ToastAndroid.show('Successfull registration', ToastAndroid.SHORT);
+        props.navigation.navigate('Login');
+      }
     } else {
       ToastAndroid.show(
         'Insert valid username and password',
         ToastAndroid.SHORT,
       );
     }
+
+    // if (username != null && password != null) {
+    //   props.addNewUser(username, password);
+    //   // props.route.params.loginCallback(true, users);
+
+    //   ToastAndroid.show('Successfull registration', ToastAndroid.SHORT);
+    //   props.navigation.navigate('Login');
+    // } else {
+    //   ToastAndroid.show(
+    //     'Insert valid username and password',
+    //     ToastAndroid.SHORT,
+    //   );
+    // }
   }
 
   return (
@@ -163,9 +209,9 @@ const mapStateToProps = (state: any) => {
 const dispatchStateToProps = (dispatcher: any) => {
   return {
     addNewUser: (username: any, password: any) =>
-      dispatcher(addUser(username, password)),
-    login: (id: number, success: string) =>
-      dispatcher(userLoggedIn(id, success)),
+      dispatcher(addNewUser(username, password)),
+    // login: (id: number, success: string) =>
+    // dispatcher(userLoggedIn(id, success)),
   };
 };
 

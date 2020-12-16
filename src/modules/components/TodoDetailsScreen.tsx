@@ -1,7 +1,10 @@
 import React, {useState} from 'react';
 import {View, Button, Text, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
-import {todoDelete, todoCompleted} from '../redux/actions/actionCreators';
+import {
+  todoDeletedThunk,
+  todoCompletedThunk,
+} from '../redux/actions/actionCreators';
 import firestore from '@react-native-firebase/firestore';
 
 function TodoDetailsScreen(props: any) {
@@ -10,28 +13,34 @@ function TodoDetailsScreen(props: any) {
   function deleteTodo() {
     // props.deleteTodos(props.route.params.todo);
     // updateData();
-    firestore()
-      .collection('todo')
-      .doc(props.route.params.todo.id)
-      .delete()
-      .then(() => {
-        console.log('Todo Deleted!');
-      });
+    // firestore()
+    //   .collection('todo')
+    //   .doc(props.route.params.todo.id)
+    //   .delete()
+    //   .then(() => {
+    //     console.log('Todo Deleted!');
+    //   });
+    props.deleteTodoThunk(props.route.params.todo.id);
     props.navigation.navigate('TodoListScreen');
   }
 
   function completeTodo() {
     // props.markTodoCompleted(props.route.params.todo);
     // // updateData();
-    firestore()
-      .collection('todo')
-      .doc(props.route.params.todo.id)
-      .update({
-        done: props.route.params.todo.done ? false : true,
-      })
-      .then(() => {
-        console.log('Todo updated!');
-      });
+    // firestore()
+    //   .collection('todo')
+    //   .doc(props.route.params.todo.id)
+    //   .update({
+    //     done: props.route.params.todo.done ? false : true,
+    //   })
+    //   .then(() => {
+    //     console.log('Todo updated!');
+    //   });
+    props.markTodoCompleted(
+      props.route.params.todo.id,
+      props.route.params.todo.done,
+    );
+    // console.log(props.route.params.todo);
     props.navigation.navigate('TodoListScreen');
   }
 
@@ -63,7 +72,7 @@ function TodoDetailsScreen(props: any) {
           </View>
           <View style={styles.btns}>
             <Button
-              title="Edit"
+              title="Save"
               color="green"
               onPress={() => editTodo(input)}
             />
@@ -71,6 +80,7 @@ function TodoDetailsScreen(props: any) {
         </View>
         <View style={styles.viewTodoText}>
           <TextInput
+            autoFocus={true}
             style={styles.todoText}
             onChangeText={(e) => setInput(e)}
             value={input}></TextInput>
@@ -113,8 +123,9 @@ const mapStateToProps = (state: any, id: number) => {
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
-    deleteTodos: (id: number) => dispatcher(todoDelete(id)),
-    markTodoCompleted: (id: number) => dispatcher(todoCompleted(id)),
+    deleteTodoThunk: (id: number) => dispatcher(todoDeletedThunk(id)),
+    markTodoCompleted: (id: number, status: boolean) =>
+      dispatcher(todoCompletedThunk(id, status)),
   };
 };
 

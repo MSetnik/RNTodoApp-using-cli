@@ -24,7 +24,10 @@
     "react-native-swipe-list-view": "^3.2.5",
     "react-native-vector-icons": "^7.1.0",
     "react-redux": "^7.2.2",
-    "redux": "^4.0.5"
+    "react-redux-firebase": "^3.8.1",
+    "redux": "^4.0.5",
+    "redux-firestore": "^0.14.0",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

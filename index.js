@@ -11,14 +11,14 @@ import store from './src/modules/redux/store/store';
 const Redux = () => {
   const reduxStore = store();
 
-  reduxStore.dispatch(actionCreators.todoAdded(1, 'new todo user user'));
-  reduxStore.dispatch(actionCreators.todoAdded(1, 'todo user 1'));
+  // reduxStore.dispatch(actionCreators.todoAdded(1, 'new todo user user'));
+  // reduxStore.dispatch(actionCreators.todoAdded(1, 'todo user 1'));
 
-  reduxStore.dispatch(actionCreators.todoAdded(2, 'todo user test'));
-  reduxStore.dispatch(actionCreators.todoAdded(2, 'user 2 new todo'));
+  // reduxStore.dispatch(actionCreators.todoAdded(2, 'todo user test'));
+  // reduxStore.dispatch(actionCreators.todoAdded(2, 'user 2 new todo'));
 
-  reduxStore.dispatch(actionCreators.addUser('user', 'user'));
-  reduxStore.dispatch(actionCreators.addUser('test', 'test'));
+  // reduxStore.dispatch(actionCreators.addUser('user', 'user'));
+  // reduxStore.dispatch(actionCreators.addUser('test', 'test'));
 
   // database()
   //   .setPersistenceEnabled(true)
