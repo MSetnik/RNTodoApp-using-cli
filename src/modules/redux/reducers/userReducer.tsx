@@ -1,15 +1,12 @@
 import {
   ADD_USER,
   USER_LOGGEDIN,
-  GET_USER_LOGGEDIN,
   ADD_USER_THUNK,
+  USER_LOGGEDOUT,
 } from '../actions/types';
-import firestore from '@react-native-firebase/firestore';
 
-let lastId = 0;
-let userLoggedIn = null;
-
-export default function userReducer(state = [], action) {
+export default function userReducer(state = [], action: any) {
+  let userToken = false;
   switch (action.type) {
     // case ADD_USER:
     //   return [
@@ -25,13 +22,13 @@ export default function userReducer(state = [], action) {
     case ADD_USER_THUNK:
       return state;
 
-    // case USER_LOGGEDIN:
-    //   state.forEach((user) => {
-    //     if (user.id == action.payload.id) {
-    //       user.signedIn = action.payload.success;
-    //     }
-    //   });
-    //   return state;
+    case USER_LOGGEDIN:
+      userToken = action.payload.userToken;
+      return {user: action.payload.user};
+
+    case USER_LOGGEDOUT:
+      userToken = action.payload.userToken;
+      return {userToken: action.payload.userToken};
 
     // case GET_USER_LOGGEDIN:
     //   state.forEach((user) => {

@@ -7,46 +7,129 @@ import {
   TextInput,
   Button,
   ToastAndroid,
+  Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
-// import {userLoggedIn} from '../redux/actions/actionCreators';
+import {userLoggedIn} from '../redux/actions/actionCreators';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 // import background from '../../assets/loginImg.jpg';
 
 const Login = (props: any) => {
+  const validateEmail = (text: any) => {
+    console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(text) === false) {
+      console.log('Email is Not Correct');
+      // setState({ email: text })
+      return false;
+    } else {
+      setUsername(text);
+      console.log('Email is Correct');
+      return true;
+    }
+  };
+
+  const login = () => {
+    if (username == '' || password == '') {
+      Alert.alert(
+        'Email or password is empty.',
+        'Input valid email or password',
+        [
+          {
+            text: 'Ok',
+            onPress: () => {},
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      if (validateEmail(username)) {
+        auth()
+          .signInWithEmailAndPassword(username, password)
+          .then(() => {
+            console.log('User account created & signed in!');
+          })
+          .catch((error) => {
+            Alert.alert(
+              'User not found',
+              'Pleas insert correct Email address and password',
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => {},
+                },
+              ],
+              {cancelable: false},
+            );
+            // if (error.code === 'auth/email-already-in-use') {
+            //   console.log('That email address is already in use!');
+            // }
+            // if (error.code === 'auth/invalid-email') {
+            //   console.log('That email address is invalid!');
+            // }
+            // if (error.code === 'auth/wrong-password') {
+            //   console.log('That email address is already in use!');
+            // }
+            // console.error(error);
+          });
+      } else {
+        Alert.alert(
+          'Wrong Email format.',
+          'Pleas insert valid Email address',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {},
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
+  };
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const [users, setUsers] = useState([]);
-  const ref = firestore().collection('user');
+  // const [users, setUsers] = useState([]);
+  // const ref = firestore().collection('user');
 
-  useEffect(() => {
-    return ref.onSnapshot((querySnapshot) => {
-      const list: any = [];
-      querySnapshot.forEach((doc) => {
-        list.push({
-          id: doc.id,
-          username: doc.data().username,
-          password: doc.data().password,
-        });
-        // console.log(doc.data().done);
-      });
-      // console.log(list);
-      setUsers(list);
-    });
-  }, []);
+  // useEffect(() => {
+  //   return ref.onSnapshot((querySnapshot) => {
+  //     const list: any = [];
+  //     querySnapshot.forEach((doc) => {
+  //       list.push({
+  //         id: doc.id,
+  //         username: doc.data().username,
+  //         password: doc.data().password,
+  //       });
+  //     });
+  //     setUsers(list);
+  //   });
+  // }, []);
 
-  console.log(users);
-  function checkLogin(username: string, password: string) {
-    users.forEach((user: any) => {
-      if (user.username == username && user.password == password) {
-        // props.login(user.id, true);
+  // function checkLogin(username: string, password: string) {
+  //   let userFound = false;
 
-        props.route.params.loginCallback(true, user);
-        // console.log(props.state);
-      }
-    });
-  }
+  //   if (username != '' || password != '') {
+  //     users.forEach((user: any) => {
+  //       if (user.username == username && user.password == password) {
+  //         userFound = true;
+  //         props.login(true, user);
+  //       }
+  //     });
+
+  //     if (!userFound) {
+  //       ToastAndroid.show('Wrong username or password', ToastAndroid.SHORT);
+  //     }
+  //   } else {
+  //     ToastAndroid.show(
+  //       'Insert valid username or password',
+  //       ToastAndroid.SHORT,
+  //     );
+  //   }
+  // }
 
   return (
     <View style={styles.mainView}>
@@ -55,15 +138,17 @@ const Login = (props: any) => {
           <Text style={styles.mainText}>Login</Text>
           <View style={styles.loginInputContainer}>
             <View style={styles.usernameView}>
-              <Text style={styles.usernameText}>Username:</Text>
+              <Text style={styles.usernameText}>Email:</Text>
               <TextInput
+                autoCapitalize="none"
                 style={styles.usernameInput}
-                placeholder="username"
+                placeholder="john.doe@gmail.com"
                 onChangeText={(e) => setUsername(e)}></TextInput>
             </View>
             <View style={styles.passwordView}>
               <Text style={styles.passwordText}>Password:</Text>
               <TextInput
+                secureTextEntry={true}
                 style={styles.passwordInput}
                 placeholder="password"
                 onChangeText={(e) => setPassword(e)}></TextInput>
@@ -71,7 +156,7 @@ const Login = (props: any) => {
           </View>
           <View style={styles.viewLoginBtn}>
             <Button
-              onPress={() => checkLogin(username, password)}
+              onPress={() => login()}
               title="Log in"
               // onPress={() => props.route.params.loginCallback(true)}
             />
@@ -82,11 +167,7 @@ const Login = (props: any) => {
             </Text>
             <Button
               title="Register"
-              onPress={() =>
-                props.navigation.navigate('Register', {
-                  users: users,
-                })
-              }
+              onPress={() => props.navigation.navigate('Register')}
             />
           </View>
         </View>
@@ -182,9 +263,8 @@ const mapStateToProps = (state: any) => {
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
-    // login: (id: number, success: string) =>
-    //   dispatcher(userLoggedIn(id, success)),
+    login: (user: any) => dispatcher(userLoggedIn(user)),
   };
 };
 
-export default connect(mapStateToProps)(Login);
+export default connect(mapStateToProps, dispatchStateToProps)(Login);

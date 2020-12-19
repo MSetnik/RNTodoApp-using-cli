@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
   Text,
   View,
@@ -20,9 +20,24 @@ function TodoListScreen(props: any) {
   const [todos, setTodos] = useState([]);
   const ref = firestore()
     .collection('todo')
-    .where('userID', '==', props.route.params.user.id);
+    .where('userID', '==', props.route.params.userId);
 
-  console.log(props.route.params.user);
+  useLayoutEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          style={styles.headerSettingsTouchable}
+          onPress={() =>
+            props.navigation.navigate('Settings', {
+              user: props.route.params.userMail,
+            })
+          }>
+          <IconsAntDesign style={styles.headerSettingsBtn} name="setting" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [props.navigation]);
+
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
       const list: any = [];
@@ -34,7 +49,6 @@ function TodoListScreen(props: any) {
           done: doc.data().done,
         });
       });
-
       setTodos(list);
     });
   }, []);
@@ -104,15 +118,12 @@ function TodoListScreen(props: any) {
       </View>
 
       <View style={styles.containerInput}>
-        <Text style={styles.input}>
-          current user: {props.route.params.user.username}
-        </Text>
         <Button
           // style={styles.btnAdd}
-          title="add"
+          title="New"
           onPress={() =>
             props.navigation.navigate('TodoFormScreen', {
-              userId: props.route.params.user.id,
+              userId: props.route.params.userId,
             })
           }
         />
@@ -148,17 +159,14 @@ const styles = StyleSheet.create({
   },
 
   containerInput: {
-    flexDirection: 'row',
+    position: 'absolute',
     bottom: 0,
-    padding: 5,
-    justifyContent: 'space-between',
+    right: 0,
+    padding: 15,
   },
   input: {
     flex: 1,
     textAlign: 'center',
-  },
-  btnAdd: {
-    paddingLeft: 10,
   },
   rowBack: {
     alignItems: 'center',
@@ -178,29 +186,35 @@ const styles = StyleSheet.create({
     top: 0,
     width: 75,
   },
+  headerSettingsBtn: {
+    fontSize: 30,
+    color: 'white',
+  },
+  headerSettingsTouchable: {
+    marginRight: 15,
+  },
 });
 
 const mapStateToProps = (state: any) => {
-  var userid: any = null;
-  state.userReducer.forEach((user: any) => {
-    if (user.signedIn) {
-      userid = user.id;
-    }
-  });
-
-  const todos = state.todoReducer.filter((todo: any) => todo.userId == userid);
-  return {
-    todos: state.todoReducer,
-    state: state,
-    userTodos: todos,
-    userId: userid,
-  };
+  // var userid: any = null;
+  // state.userReducer.forEach((user: any) => {
+  //   if (user.signedIn) {
+  //     userid = user.id;
+  //   }
+  // });
+  // const todos = state.todoReducer.filter((todo: any) => todo.userId == userid);
+  // return {
+  //   todos: state.todoReducer,
+  //   state: state,
+  //   userTodos: todos,
+  //   userId: userid,
+  // };
+  return state;
 };
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
     deleteTodoThunk: (id: number) => dispatcher(todoDeletedThunk(id)),
-
     markTodoCompleted: (id: number, status: boolean) =>
       dispatcher(todoCompletedThunk(id, status)),
   };

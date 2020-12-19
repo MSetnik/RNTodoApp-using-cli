@@ -1,6 +1,10 @@
 export const ADD_TODO_THUNK = 'ADD_TODO_THUNK';
 export const DELETE_TODO_THUNK = 'DELETE_TODO_THUNK';
 export const TODO_COMPLETED_THUNK = 'TODO_COMPLETED_THUNK';
+export const GET_USER_TODOS = 'GET_USER_TODOS';
+export const GET_ALL_TODOS = 'GET_ALL_TODOS';
 
 export const ADD_USER = 'ADD_USER';
 export const ADD_USER_THUNK = 'ADD_USER_THUNK';
+export const USER_LOGGEDIN = 'USER_LOGGEDIN';
+export const USER_LOGGEDOUT = 'USER_LOGGEDOUT';

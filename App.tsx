@@ -1,77 +1,42 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Login from './src/modules/components/Login';
 import Register from './src/modules/components/Register';
 import TodoListScreen from './src/modules/components/TodoListScreen';
 import TodoDetailsScreen from './src/modules/components/TodoDetailsScreen';
 import TodoFormScreen from './src/modules/components/TodoFormScreen';
+import Settings from './src/modules/components/Settings';
 import {NavigationContainer} from '@react-navigation/native';
-import {
-  createStackNavigator,
-  StackNavigationOptions,
-} from '@react-navigation/stack';
-import {StyleSheet, ScrollView, View, Text, StatusBar} from 'react-native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {View, StatusBar} from 'react-native';
 import {connect} from 'react-redux';
-// import {getUserLoggedIn} from './src/modules/redux/actions/actionCreators';
-// import database from '@react-native-firebase/database';
+import {userLoggedIn} from './src/modules/redux/actions/actionCreators';
+import auth from '@react-native-firebase/auth';
 
 const App = (props: any) => {
   const Stack = createStackNavigator();
 
-  // useEffect(() => {
-  //   const todos = database()
-  //     .ref('/todo')
-  //     .once('value')
-  //     .then((snapshot) => {
-  //       console.log('User data: ', snapshot.val());
-  //     });
-  // });
+  // Set an initializing state whilst Firebase connects
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser]: any = useState();
 
-  const loginSuccessCallback = (success: any, user: any) => {
-    if (success) {
-      setLoggedInScreen(
-        <>
-          <Stack.Screen
-            name="TodoListScreen"
-            component={TodoListScreen}
-            options={{title: 'Todos'}}
-            initialParams={{user: user}}
-          />
-          <Stack.Screen
-            name="TodoFormScreen"
-            component={TodoFormScreen}
-            options={{title: 'New Todo'}}
-          />
-          <Stack.Screen
-            name="TodoDetailsScreen"
-            component={TodoDetailsScreen}
-            options={{title: 'Details'}}
-          />
-        </>,
-      );
-    }
-  };
+  // console.log(user);
+  // Handle user state changes
+  function onAuthStateChanged(user: any) {
+    setUser(user);
+    props.userLoggedIn(user);
+    if (initializing) setInitializing(false);
+  }
 
-  const [loggedInScreen, setLoggedInScreen] = useState(
-    <>
-      <Stack.Screen
-        name="Login"
-        component={Login}
-        initialParams={{
-          loginCallback: loginSuccessCallback,
-        }}
-      />
-      <Stack.Screen
-        name="Register"
-        component={Register}
-        initialParams={{
-          loginCallback: loginSuccessCallback,
-        }}
-      />
-    </>,
-  );
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null;
 
   return (
     <View style={{flex: 1}}>
+      <StatusBar backgroundColor="#003c8f" />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Login"
@@ -81,7 +46,38 @@ const App = (props: any) => {
             },
             headerTintColor: '#fff',
           }}>
-          {loggedInScreen}
+          {user ? (
+            <>
+              <Stack.Screen
+                name="TodoListScreen"
+                component={TodoListScreen}
+                options={{
+                  title: 'Todos',
+                }}
+                initialParams={{userId: user.uid, userMail: user.email}}
+              />
+              <Stack.Screen
+                name="TodoFormScreen"
+                component={TodoFormScreen}
+                options={{title: 'New Todo'}}
+              />
+              <Stack.Screen
+                name="TodoDetailsScreen"
+                component={TodoDetailsScreen}
+                options={{title: 'Details'}}
+              />
+              <Stack.Screen
+                name="Settings"
+                component={Settings}
+                options={{title: 'Settings'}}
+              />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Register" component={Register} />
+            </>
+          )}
         </Stack.Navigator>
       </NavigationContainer>
     </View>
@@ -94,8 +90,8 @@ const mapStateToProps = (state: any) => {
 
 const dispatchStateToProps = (dispatcher: any) => {
   return {
-    // getLoggedInUser: () => dispatcher(getUserLoggedIn()),
+    userLoggedIn: (user: any) => dispatcher(userLoggedIn(user)),
   };
 };
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, dispatchStateToProps)(App);

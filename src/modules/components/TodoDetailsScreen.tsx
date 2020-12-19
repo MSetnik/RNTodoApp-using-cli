@@ -11,36 +11,15 @@ function TodoDetailsScreen(props: any) {
   const [input, setInput] = useState(props.route.params.todo.text);
 
   function deleteTodo() {
-    // props.deleteTodos(props.route.params.todo);
-    // updateData();
-    // firestore()
-    //   .collection('todo')
-    //   .doc(props.route.params.todo.id)
-    //   .delete()
-    //   .then(() => {
-    //     console.log('Todo Deleted!');
-    //   });
     props.deleteTodoThunk(props.route.params.todo.id);
     props.navigation.navigate('TodoListScreen');
   }
 
   function completeTodo() {
-    // props.markTodoCompleted(props.route.params.todo);
-    // // updateData();
-    // firestore()
-    //   .collection('todo')
-    //   .doc(props.route.params.todo.id)
-    //   .update({
-    //     done: props.route.params.todo.done ? false : true,
-    //   })
-    //   .then(() => {
-    //     console.log('Todo updated!');
-    //   });
     props.markTodoCompleted(
       props.route.params.todo.id,
       props.route.params.todo.done,
     );
-    // console.log(props.route.params.todo);
     props.navigation.navigate('TodoListScreen');
   }
 
@@ -51,9 +30,7 @@ function TodoDetailsScreen(props: any) {
       .update({
         text: input,
       })
-      .then(() => {
-        console.log('Todo updated!');
-      });
+      .then(() => {});
     props.navigation.navigate('TodoListScreen');
   }
 

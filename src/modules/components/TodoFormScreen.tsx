@@ -17,8 +17,12 @@ function TodoFormScreen(props: any) {
   // const ref = firestore().collection('todo');
 
   function addTodo() {
-    props.addTodoThunk(props.route.params.userId, input);
-    props.navigation.navigate('TodoListScreen');
+    if (input != '') {
+      props.addTodoThunk(props.route.params.userId, input);
+      props.navigation.navigate('TodoListScreen');
+    } else {
+      ToastAndroid.show('Input must not be empty', ToastAndroid.SHORT);
+    }
   }
 
   return (

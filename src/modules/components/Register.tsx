@@ -6,88 +6,141 @@ import {
   ImageBackground,
   TextInput,
   Button,
+  Alert,
   ToastAndroid,
 } from 'react-native';
 import {LogBox} from 'react-native';
 // import background from "../assets/loginImg.jpg";
 import {addNewUser} from '../redux/actions/actionCreators';
+import {userLoggedIn} from '../redux/actions/actionCreators';
+
 import {connect} from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 function Register(props: any) {
-  LogBox.ignoreLogs([
-    'Non-serializable values were found in the navigation state',
-  ]);
-
-  console.log(props);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const ref = firestore().collection('user');
-  const [users, setUsers] = useState([]);
+  const validateEmail = (text: any) => {
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (reg.test(text) === false) {
+      console.log('Email is Not Correct');
+      // setState({ email: text })
+      return false;
+    } else {
+      setUsername(text);
+      console.log('Email is Correct');
+      return true;
+    }
+  };
 
-  // function getUsers() {
-  //   useEffect(() => {
-  //     return ref.onSnapshot((querySnapshot) => {
-  //       let user: any = {};
-  //       querySnapshot.forEach((doc) => {
-  //         if (
-  //           username == doc.data().username &&
-  //           password == doc.data().password
-  //         ) {
-  //           user = {
-  //             id: doc.id,
-  //             username: username,
-  //             password: password,
-  //           };
-  //         }
-  //         // console.log(doc.data().done);
-  //       });
-  //       // console.log(list);
-  //       setUsers(user);
+  const register = () => {
+    if (username == '' || password == '') {
+      Alert.alert(
+        'Email or password is empty.',
+        'Input valid email or password',
+        [
+          {
+            text: 'Ok',
+            onPress: () => {},
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      if (validateEmail(username)) {
+        auth()
+          .createUserWithEmailAndPassword(username, password)
+          .then(() => {
+            console.log('User account created & signed in!');
+          })
+          .catch((error) => {
+            Alert.alert(
+              'OOPS!',
+              'Something went wrong',
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => {},
+                },
+              ],
+              {cancelable: false},
+            );
+            // if (error.code === 'auth/email-already-in-use') {
+            //   console.log('That email address is already in use!');
+            // }
+            // if (error.code === 'auth/invalid-email') {
+            //   console.log('That email address is invalid!');
+            // }
+            // if (error.code === 'auth/wrong-password') {
+            //   console.log('That email address is already in use!');
+            // }
+            // console.error(error);
+          });
+      } else {
+        Alert.alert(
+          'Wrong Email format.',
+          'Pleas insert valid Email address',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {},
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    }
+  };
+
+  // const ref = firestore().collection('user');
+  // const [users, setUsers] = useState([]);
+
+  // function RegisterUser(username: string, password: string) {
+  //   let userFound;
+  //   if (username != '' && password != '') {
+  //     props.route.params.users.forEach((user: any) => {
+  //       if (username == user.username) {
+  //         userFound = true;
+  //         ToastAndroid.show('Username is already taken', ToastAndroid.SHORT);
+  //       } else {
+  //         userFound = false;
+  //       }
   //     });
-  //   }, []);
+
+  //     if (!userFound) {
+  //       props.addNewUser(username, password);
+
+  //       ToastAndroid.show('Successfull registration', ToastAndroid.SHORT);
+  //       props.navigation.navigate('Login');
+  //     }
+  //   } else {
+  //     ToastAndroid.show(
+  //       'Insert valid username and password',
+  //       ToastAndroid.SHORT,
+  //     );
+  //   }
   // }
 
-  function RegisterUser(username: string, password: string) {
-    let userFound;
-    if (username != '' && password != '') {
-      props.route.params.users.forEach((user: any) => {
-        if (username == user.username) {
-          userFound = true;
-          ToastAndroid.show('Username is already taken', ToastAndroid.SHORT);
-        } else {
-          userFound = false;
-        }
-      });
+  // const register = () => {
+  //   auth()
+  //     .createUserWithEmailAndPassword(username, password)
+  //     .then(() => {
+  //       console.log('User account created & signed in!');
+  //     })
+  //     .catch((error) => {
+  //       if (error.code === 'auth/email-already-in-use') {
+  //         console.log('That email address is already in use!');
+  //       }
 
-      if (!userFound) {
-        props.addNewUser(username, password);
+  //       if (error.code === 'auth/invalid-email') {
+  //         console.log('That email address is invalid!');
+  //       }
 
-        ToastAndroid.show('Successfull registration', ToastAndroid.SHORT);
-        props.navigation.navigate('Login');
-      }
-    } else {
-      ToastAndroid.show(
-        'Insert valid username and password',
-        ToastAndroid.SHORT,
-      );
-    }
-
-    // if (username != null && password != null) {
-    //   props.addNewUser(username, password);
-    //   // props.route.params.loginCallback(true, users);
-
-    //   ToastAndroid.show('Successfull registration', ToastAndroid.SHORT);
-    //   props.navigation.navigate('Login');
-    // } else {
-    //   ToastAndroid.show(
-    //     'Insert valid username and password',
-    //     ToastAndroid.SHORT,
-    //   );
-    // }
-  }
-
+  //       console.error(error);
+  //     });
+  // };
   return (
     <View style={styles.mainView}>
       <View style={styles.image}>
@@ -95,24 +148,27 @@ function Register(props: any) {
           <Text style={styles.mainText}>Register</Text>
           <View style={styles.loginInputContainer}>
             <View style={styles.usernameView}>
-              <Text style={styles.usernameText}>Username:</Text>
+              <Text style={styles.usernameText}>Email:</Text>
               <TextInput
+                autoCapitalize="none"
                 style={styles.usernameInput}
-                placeholder="New username"
+                placeholder="john.doe@gmail.com"
                 onChangeText={(e) => setUsername(e)}></TextInput>
             </View>
             <View style={styles.passwordView}>
               <Text style={styles.passwordText}>Password:</Text>
               <TextInput
+                secureTextEntry={true}
                 style={styles.passwordInput}
-                placeholder="New password"
+                placeholder="password"
                 onChangeText={(e) => setPassword(e)}></TextInput>
             </View>
           </View>
           <View style={styles.viewLoginBtn}>
             <Button
               // style={styles.buttonLogin}
-              onPress={() => RegisterUser(username, password)}
+              onPress={() => register()}
+              disabled={password.length >= 6 ? false : true}
               title="Register"
             />
           </View>
@@ -210,8 +266,7 @@ const dispatchStateToProps = (dispatcher: any) => {
   return {
     addNewUser: (username: any, password: any) =>
       dispatcher(addNewUser(username, password)),
-    // login: (id: number, success: string) =>
-    // dispatcher(userLoggedIn(id, success)),
+    login: (user: any) => dispatcher(userLoggedIn(user)),
   };
 };
 
