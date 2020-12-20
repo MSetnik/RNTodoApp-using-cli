@@ -17,6 +17,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 function Settings(props: any) {
+  console.log(props.route.params);
   function deleteAllTodos() {
     Alert.alert(
       'You will delete all todos.',

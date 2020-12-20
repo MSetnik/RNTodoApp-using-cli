@@ -15,11 +15,13 @@ function TodoFormScreen(props: any) {
   const [input, setInput] = useState('');
 
   // const ref = firestore().collection('todo');
+  console.log(props.route.params);
 
   function addTodo() {
     if (input != '') {
       props.addTodoThunk(props.route.params.userId, input);
-      props.navigation.navigate('TodoListScreen');
+      setInput('');
+      props.navigation.jumpTo('TodoListScreen');
     } else {
       ToastAndroid.show('Input must not be empty', ToastAndroid.SHORT);
     }

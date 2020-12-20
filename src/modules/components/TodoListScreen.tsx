@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
   Button,
+  Alert,
   TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
@@ -22,21 +23,22 @@ function TodoListScreen(props: any) {
     .collection('todo')
     .where('userID', '==', props.route.params.userId);
 
-  useLayoutEffect(() => {
-    props.navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          style={styles.headerSettingsTouchable}
-          onPress={() =>
-            props.navigation.navigate('Settings', {
-              user: props.route.params.userMail,
-            })
-          }>
-          <IconsAntDesign style={styles.headerSettingsBtn} name="setting" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [props.navigation]);
+  // useLayoutEffect(() => {
+  //   props.navigation.setOptions({
+  //     headerRight: () => (
+  //       <TouchableOpacity
+  //         style={styles.headerSettingsTouchable}
+  //         onPress={() =>
+  //           props.navigation.navigate('Settings', {
+  //             userMail: props.route.params.userMail,
+  //             userId: props.route.params.userId,
+  //           })
+  //         }>
+  //         <IconsAntDesign style={styles.headerSettingsBtn} name="setting" />
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [props.navigation]);
 
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
@@ -64,8 +66,22 @@ function TodoListScreen(props: any) {
     closeRow(rowMap, id);
   };
 
-  const deleteRow = (id: number) => {
-    props.deleteTodoThunk(id);
+  const deleteRow = (id: number, rowMap: any) => {
+    Alert.alert(
+      'You will delete selected todo.',
+      'Procede?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => props.deleteTodoThunk(id),
+        },
+        {
+          text: 'Cancel',
+          onPress: () => closeRow(rowMap, id),
+        },
+      ],
+      {cancelable: false},
+    );
   };
 
   return (
@@ -102,7 +118,7 @@ function TodoListScreen(props: any) {
               <TouchableOpacity>
                 <Text
                   style={{padding: 20}}
-                  onPress={() => deleteRow(data.item.id)}>
+                  onPress={() => deleteRow(data.item.id, rowMap)}>
                   Delete
                 </Text>
               </TouchableOpacity>
@@ -114,18 +130,6 @@ function TodoListScreen(props: any) {
           useNativeDriver={false}
           leftOpenValue={75}
           rightOpenValue={-75}
-        />
-      </View>
-
-      <View style={styles.containerInput}>
-        <Button
-          // style={styles.btnAdd}
-          title="New"
-          onPress={() =>
-            props.navigation.navigate('TodoFormScreen', {
-              userId: props.route.params.userId,
-            })
-          }
         />
       </View>
     </View>

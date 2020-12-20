@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Button, Text, StyleSheet, TextInput} from 'react-native';
+import {View, Button, Alert, StyleSheet, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {
   todoDeletedThunk,
@@ -13,6 +13,24 @@ function TodoDetailsScreen(props: any) {
   function deleteTodo() {
     props.deleteTodoThunk(props.route.params.todo.id);
     props.navigation.navigate('TodoListScreen');
+  }
+
+  function deleteTodoAlert() {
+    Alert.alert(
+      'You will delete selected todo.',
+      'Procede?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => deleteTodo(),
+        },
+        {
+          text: 'Cancel',
+          onPress: () => {},
+        },
+      ],
+      {cancelable: false},
+    );
   }
 
   function completeTodo() {
@@ -45,7 +63,11 @@ function TodoDetailsScreen(props: any) {
             />
           </View>
           <View style={styles.btns}>
-            <Button title="Delete" color="red" onPress={() => deleteTodo()} />
+            <Button
+              title="Delete"
+              color="red"
+              onPress={() => deleteTodoAlert()}
+            />
           </View>
           <View style={styles.btns}>
             <Button

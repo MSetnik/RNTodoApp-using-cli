@@ -12,9 +12,13 @@ import {connect} from 'react-redux';
 import {userLoggedIn} from './src/modules/redux/actions/actionCreators';
 import auth from '@react-native-firebase/auth';
 
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+import IonIcons from 'react-native-vector-icons/Ionicons';
+
 const App = (props: any) => {
   const Stack = createStackNavigator();
 
+  const Tab = createMaterialBottomTabNavigator();
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser]: any = useState();
@@ -34,6 +38,51 @@ const App = (props: any) => {
 
   if (initializing) return null;
 
+  const NavTab = () => {
+    return (
+      <Tab.Navigator>
+        <Tab.Screen
+          name="TodoListScreen"
+          component={TodoListScreen}
+          // options={{
+          //   title: 'Todos',
+          // }}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({color}) => (
+              <IonIcons name="home" color={color} size={26} />
+            ),
+          }}
+          initialParams={{userId: user.uid, userMail: user.email}}
+        />
+        <Tab.Screen
+          name="TodoFormScreen"
+          component={TodoFormScreen}
+          initialParams={{userId: user.uid, userMail: user.email}}
+          // options={{title: 'New Todo'}}
+          options={{
+            tabBarLabel: 'New todo',
+            tabBarIcon: ({color}) => (
+              <IonIcons name="add-circle-outline" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
+          component={Settings}
+          // options={{title: 'Settings'}}
+          options={{
+            tabBarLabel: 'Settings',
+            tabBarIcon: ({color}) => (
+              <IonIcons name="settings-outline" color={color} size={26} />
+            ),
+          }}
+          initialParams={{userId: user.uid, userMail: user.email}}
+        />
+      </Tab.Navigator>
+    );
+  };
+
   return (
     <View style={{flex: 1}}>
       <StatusBar backgroundColor="#003c8f" />
@@ -50,26 +99,16 @@ const App = (props: any) => {
             <>
               <Stack.Screen
                 name="TodoListScreen"
-                component={TodoListScreen}
-                options={{
+                component={NavTab}
+                options={({route}) => ({
                   title: 'Todos',
-                }}
+                })}
                 initialParams={{userId: user.uid, userMail: user.email}}
-              />
-              <Stack.Screen
-                name="TodoFormScreen"
-                component={TodoFormScreen}
-                options={{title: 'New Todo'}}
               />
               <Stack.Screen
                 name="TodoDetailsScreen"
                 component={TodoDetailsScreen}
                 options={{title: 'Details'}}
-              />
-              <Stack.Screen
-                name="Settings"
-                component={Settings}
-                options={{title: 'Settings'}}
               />
             </>
           ) : (
