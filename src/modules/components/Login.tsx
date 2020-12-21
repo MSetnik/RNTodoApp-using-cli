@@ -1,9 +1,19 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput, Button, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  Alert,
+  ImageBackground,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {userLoggedIn} from '../redux/actions/actionCreators';
 import auth from '@react-native-firebase/auth';
-// import background from '../../assets/loginImg.jpg';
+
+// ne razumijem zasto .ts stavi error kod putanje dok .js ne
+import img from '../../assets/loginImg.jpg';
 
 const Login = (props: any) => {
   const validateEmail = (text: any) => {
@@ -73,7 +83,7 @@ const Login = (props: any) => {
 
   return (
     <View style={styles.mainView}>
-      <View style={styles.image}>
+      <ImageBackground style={styles.image} source={img}>
         <View style={styles.loginContainer}>
           <Text style={styles.mainText}>Login</Text>
           <View style={styles.loginInputContainer}>
@@ -107,7 +117,7 @@ const Login = (props: any) => {
             />
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 };

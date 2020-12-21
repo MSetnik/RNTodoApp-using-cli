@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,11 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-// import background from "../assets/loginImg.jpg";
 import {addNewUser} from '../redux/actions/actionCreators';
 import {userLoggedIn} from '../redux/actions/actionCreators';
+
+// ne razumijem zasto .ts stavi error kod putanje dok .js ne
+import img from '../../assets/loginImg.jpg';
 
 import {connect} from 'react-redux';
 import auth from '@react-native-firebase/auth';
@@ -83,7 +85,7 @@ function Register(props: any) {
 
   return (
     <View style={styles.mainView}>
-      <View style={styles.image}>
+      <ImageBackground style={styles.image} source={img}>
         <View style={styles.loginContainer}>
           <Text style={styles.mainText}>Register</Text>
           <View style={styles.loginInputContainer}>
@@ -112,7 +114,7 @@ function Register(props: any) {
             />
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
