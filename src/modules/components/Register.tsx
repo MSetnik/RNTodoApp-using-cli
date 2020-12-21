@@ -9,13 +9,11 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import {LogBox} from 'react-native';
 // import background from "../assets/loginImg.jpg";
 import {addNewUser} from '../redux/actions/actionCreators';
 import {userLoggedIn} from '../redux/actions/actionCreators';
 
 import {connect} from 'react-redux';
-import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 function Register(props: any) {
@@ -26,7 +24,6 @@ function Register(props: any) {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) {
       console.log('Email is Not Correct');
-      // setState({ email: text })
       return false;
     } else {
       setUsername(text);
@@ -67,16 +64,6 @@ function Register(props: any) {
               ],
               {cancelable: false},
             );
-            // if (error.code === 'auth/email-already-in-use') {
-            //   console.log('That email address is already in use!');
-            // }
-            // if (error.code === 'auth/invalid-email') {
-            //   console.log('That email address is invalid!');
-            // }
-            // if (error.code === 'auth/wrong-password') {
-            //   console.log('That email address is already in use!');
-            // }
-            // console.error(error);
           });
       } else {
         Alert.alert(
@@ -94,53 +81,6 @@ function Register(props: any) {
     }
   };
 
-  // const ref = firestore().collection('user');
-  // const [users, setUsers] = useState([]);
-
-  // function RegisterUser(username: string, password: string) {
-  //   let userFound;
-  //   if (username != '' && password != '') {
-  //     props.route.params.users.forEach((user: any) => {
-  //       if (username == user.username) {
-  //         userFound = true;
-  //         ToastAndroid.show('Username is already taken', ToastAndroid.SHORT);
-  //       } else {
-  //         userFound = false;
-  //       }
-  //     });
-
-  //     if (!userFound) {
-  //       props.addNewUser(username, password);
-
-  //       ToastAndroid.show('Successfull registration', ToastAndroid.SHORT);
-  //       props.navigation.navigate('Login');
-  //     }
-  //   } else {
-  //     ToastAndroid.show(
-  //       'Insert valid username and password',
-  //       ToastAndroid.SHORT,
-  //     );
-  //   }
-  // }
-
-  // const register = () => {
-  //   auth()
-  //     .createUserWithEmailAndPassword(username, password)
-  //     .then(() => {
-  //       console.log('User account created & signed in!');
-  //     })
-  //     .catch((error) => {
-  //       if (error.code === 'auth/email-already-in-use') {
-  //         console.log('That email address is already in use!');
-  //       }
-
-  //       if (error.code === 'auth/invalid-email') {
-  //         console.log('That email address is invalid!');
-  //       }
-
-  //       console.error(error);
-  //     });
-  // };
   return (
     <View style={styles.mainView}>
       <View style={styles.image}>
@@ -166,7 +106,6 @@ function Register(props: any) {
           </View>
           <View style={styles.viewLoginBtn}>
             <Button
-              // style={styles.buttonLogin}
               onPress={() => register()}
               disabled={password.length >= 6 ? false : true}
               title="Register"

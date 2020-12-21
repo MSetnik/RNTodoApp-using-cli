@@ -1,4 +1,3 @@
-import {act} from 'react-test-renderer';
 import {
   ADD_TODO_THUNK,
   DELETE_TODO_THUNK,
@@ -7,12 +6,9 @@ import {
   GET_ALL_TODOS,
 } from '../actions/types';
 
-let lastId = 0;
-
 export default function todoReducer(state = [], action: any) {
   switch (action.type) {
     case ADD_TODO_THUNK:
-      // console.log(action.payload.state);
       return state;
 
     case DELETE_TODO_THUNK:

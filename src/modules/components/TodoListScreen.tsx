@@ -1,9 +1,8 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Text,
   View,
   StyleSheet,
-  Button,
   Alert,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -22,23 +21,6 @@ function TodoListScreen(props: any) {
   const ref = firestore()
     .collection('todo')
     .where('userID', '==', props.route.params.userId);
-
-  // useLayoutEffect(() => {
-  //   props.navigation.setOptions({
-  //     headerRight: () => (
-  //       <TouchableOpacity
-  //         style={styles.headerSettingsTouchable}
-  //         onPress={() =>
-  //           props.navigation.navigate('Settings', {
-  //             userMail: props.route.params.userMail,
-  //             userId: props.route.params.userId,
-  //           })
-  //         }>
-  //         <IconsAntDesign style={styles.headerSettingsBtn} name="setting" />
-  //       </TouchableOpacity>
-  //     ),
-  //   });
-  // }, [props.navigation]);
 
   useEffect(() => {
     return ref.onSnapshot((querySnapshot) => {
@@ -88,7 +70,6 @@ function TodoListScreen(props: any) {
     <View style={styles.mainView}>
       <View style={styles.flatlistView}>
         <SwipeListView
-          // style={styles.flatlistContainer}
           data={todos}
           keyExtractor={(item: any) => item.id.toString()}
           renderItem={({item}) => (
@@ -200,19 +181,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state: any) => {
-  // var userid: any = null;
-  // state.userReducer.forEach((user: any) => {
-  //   if (user.signedIn) {
-  //     userid = user.id;
-  //   }
-  // });
-  // const todos = state.todoReducer.filter((todo: any) => todo.userId == userid);
-  // return {
-  //   todos: state.todoReducer,
-  //   state: state,
-  //   userTodos: todos,
-  //   userId: userid,
-  // };
   return state;
 };
 

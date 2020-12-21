@@ -1,19 +1,10 @@
-import React, {useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Button,
-  Alert,
-  TextInput,
-  ToastAndroid,
-} from 'react-native';
+import React from 'react';
+import {View, StyleSheet, Text, Button, Alert} from 'react-native';
 import {connect} from 'react-redux';
 import {
   userLoggedout,
   deleteAllUserTodosThunk,
 } from '../redux/actions/actionCreators';
-import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 function Settings(props: any) {

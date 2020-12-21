@@ -9,12 +9,10 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {todoAddedThunk} from '../redux/actions/actionCreators';
-import firestore from '@react-native-firebase/firestore';
 
 function TodoFormScreen(props: any) {
   const [input, setInput] = useState('');
 
-  // const ref = firestore().collection('todo');
   console.log(props.route.params);
 
   function addTodo() {

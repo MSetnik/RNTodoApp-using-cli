@@ -1,17 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
-  TextInput,
-  Button,
-  ToastAndroid,
-  Alert,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, TextInput, Button, Alert} from 'react-native';
 import {connect} from 'react-redux';
 import {userLoggedIn} from '../redux/actions/actionCreators';
-import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 // import background from '../../assets/loginImg.jpg';
 
@@ -21,7 +11,6 @@ const Login = (props: any) => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) {
       console.log('Email is Not Correct');
-      // setState({ email: text })
       return false;
     } else {
       setUsername(text);
@@ -62,16 +51,6 @@ const Login = (props: any) => {
               ],
               {cancelable: false},
             );
-            // if (error.code === 'auth/email-already-in-use') {
-            //   console.log('That email address is already in use!');
-            // }
-            // if (error.code === 'auth/invalid-email') {
-            //   console.log('That email address is invalid!');
-            // }
-            // if (error.code === 'auth/wrong-password') {
-            //   console.log('That email address is already in use!');
-            // }
-            // console.error(error);
           });
       } else {
         Alert.alert(
@@ -91,45 +70,6 @@ const Login = (props: any) => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  // const [users, setUsers] = useState([]);
-  // const ref = firestore().collection('user');
-
-  // useEffect(() => {
-  //   return ref.onSnapshot((querySnapshot) => {
-  //     const list: any = [];
-  //     querySnapshot.forEach((doc) => {
-  //       list.push({
-  //         id: doc.id,
-  //         username: doc.data().username,
-  //         password: doc.data().password,
-  //       });
-  //     });
-  //     setUsers(list);
-  //   });
-  // }, []);
-
-  // function checkLogin(username: string, password: string) {
-  //   let userFound = false;
-
-  //   if (username != '' || password != '') {
-  //     users.forEach((user: any) => {
-  //       if (user.username == username && user.password == password) {
-  //         userFound = true;
-  //         props.login(true, user);
-  //       }
-  //     });
-
-  //     if (!userFound) {
-  //       ToastAndroid.show('Wrong username or password', ToastAndroid.SHORT);
-  //     }
-  //   } else {
-  //     ToastAndroid.show(
-  //       'Insert valid username or password',
-  //       ToastAndroid.SHORT,
-  //     );
-  //   }
-  // }
 
   return (
     <View style={styles.mainView}>
@@ -155,11 +95,7 @@ const Login = (props: any) => {
             </View>
           </View>
           <View style={styles.viewLoginBtn}>
-            <Button
-              onPress={() => login()}
-              title="Log in"
-              // onPress={() => props.route.params.loginCallback(true)}
-            />
+            <Button onPress={() => login()} title="Log in" />
           </View>
           <View style={styles.viewRegisterBtn}>
             <Text style={styles.registerText}>

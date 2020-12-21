@@ -46,10 +46,6 @@ export function deleteAllUserTodosThunk(userID: any) {
           });
       });
     });
-
-    // userTodos.forEach((todo) => {
-    //   console.log(todo);
-    // });
   };
 }
 
@@ -72,15 +68,6 @@ export function todoDeletedThunk(id: any) {
   };
 }
 
-// export function todoCompleted(id) {
-//   return {
-//     type: actions.TODO_COMPLETED,
-//     payload: {
-//       todoId: id,
-//     },
-//   };
-// }
-
 export function todoCompletedThunk(id: any, status: any) {
   return (dispatch: any, getState: any) => {
     //async task
@@ -101,27 +88,6 @@ export function todoCompletedThunk(id: any, status: any) {
       });
   };
 }
-
-// export function userTodosThunk(id: any, status: any) {
-//   return (dispatch: any, getState: any) => {
-//     //async task
-//     const ref = firestore().collection('todo');
-
-//     ref
-//       .doc(id)
-//       .update({
-//         done: status ? false : true,
-//       })
-//       .then(() => {
-//         dispatch({
-//           type: actions.TODO_COMPLETED_THUNK,
-//         });
-//       })
-//       .catch((e) => {
-//         console.log(e);
-//       });
-//   };
-// }
 
 export function addNewUser(username: any, password: any) {
   return (dispatch: any, getState: any) => {
@@ -160,9 +126,3 @@ export function userLoggedout(userToken: any) {
     },
   };
 }
-
-// export function getUserLoggedIn() {
-//   return {
-//     type: actions.GET_USER_LOGGEDIN,
-//   };
-// }

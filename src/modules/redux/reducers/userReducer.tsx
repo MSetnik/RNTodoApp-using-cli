@@ -8,17 +8,6 @@ import {
 export default function userReducer(state = [], action: any) {
   let userToken = false;
   switch (action.type) {
-    // case ADD_USER:
-    //   return [
-    //     ...state,
-    //     {
-    //       id: ++lastId,
-    //       username: action.payload.username,
-    //       password: action.payload.password,
-    //       signedIn: false,
-    //     },
-    //   ];
-
     case ADD_USER_THUNK:
       return state;
 
@@ -29,14 +18,6 @@ export default function userReducer(state = [], action: any) {
     case USER_LOGGEDOUT:
       userToken = action.payload.userToken;
       return {userToken: action.payload.userToken};
-
-    // case GET_USER_LOGGEDIN:
-    //   state.forEach((user) => {
-    //     if (user.signedIn) {
-    //       userLoggedIn = user;
-    //     }
-    //   });
-    //   return user;
 
     default:
       return state;

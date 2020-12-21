@@ -23,7 +23,6 @@ const App = (props: any) => {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser]: any = useState();
 
-  // console.log(user);
   // Handle user state changes
   function onAuthStateChanged(user: any) {
     setUser(user);
@@ -44,9 +43,6 @@ const App = (props: any) => {
         <Tab.Screen
           name="TodoListScreen"
           component={TodoListScreen}
-          // options={{
-          //   title: 'Todos',
-          // }}
           options={{
             tabBarLabel: 'Home',
             tabBarIcon: ({color}) => (
@@ -59,7 +55,6 @@ const App = (props: any) => {
           name="TodoFormScreen"
           component={TodoFormScreen}
           initialParams={{userId: user.uid, userMail: user.email}}
-          // options={{title: 'New Todo'}}
           options={{
             tabBarLabel: 'New todo',
             tabBarIcon: ({color}) => (
@@ -70,7 +65,6 @@ const App = (props: any) => {
         <Tab.Screen
           name="Settings"
           component={Settings}
-          // options={{title: 'Settings'}}
           options={{
             tabBarLabel: 'Settings',
             tabBarIcon: ({color}) => (
